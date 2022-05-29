@@ -1,6 +1,9 @@
 import express, { Request, Response } from 'express';
 const router = express.Router();
-import { User, User_ } from '../models/user';
+import { User, Store } from '../models/user';
+import jwt from 'jsonwebtoken';
+
+const store = new Store();
 
 const createUser = async (req: Request, res: Response) => {
     const u: User = {
@@ -10,29 +13,32 @@ const createUser = async (req: Request, res: Response) => {
         password: req.body.password,
     };
     try {
-        const u_ = new User_();
-        const result = await u_.create(u);
-        res.send(result);
+        const newUser = await store.create(u);
+        var token = jwt.sign({username:u.username} , process.env.JWT_SECRET as string);
+        // res.json(newUser);
+        res.json(token);
     } catch (err) {
         res.status(400);
         res.json(err);
     }
 };
+
 
 const authUser = async (req: Request, res: Response) => {
     try {
-        const u_ = new User_();
-        const result = await u_.authenticate(
+        const store = new Store();
+        const result = await store.authenticate(
             req.body.username,
             req.body.password
         );
-        res.send(result);
+        res.json(result);
 
     } catch (err) {
         res.status(400);
         res.json(err);
     }
 };
+
 
 const users_routes = (app: express.Application) => {
     app.post('/users', createUser);

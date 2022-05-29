@@ -14,7 +14,7 @@ export type User = {
     password: string;
 };
 
-export class User_ {
+export class Store {
     async create(u: User): Promise<User> {
         try {
             // @ts-ignore

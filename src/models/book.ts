@@ -2,7 +2,6 @@ import { result } from 'lodash';
 import Client from '../database';
 
 export type Book = {
-    id: number;
     title: string;
     author: string;
     totalpages: number;
